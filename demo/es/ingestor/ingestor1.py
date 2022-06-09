@@ -44,12 +44,15 @@ def postToElasticSearch(products):
         # product의 url을 기준으로 고유 id 생성
         id = getUniqueIndexId(product.url)
         print(id)
-        #r = requests.put(putUrlPrefix + id, data=json.dumps(product.__dict__,
-        #                 indent=4, sort_keys=True, default=json_field_handler), headers=headers)
-        #if r.status_code >= 400:
-        #    print("There is an error writing to elasticsearch")
-        #    print(r.status_code)
-        #    print(r.json())
+        # prefix + id 형태
+        # json.dumps를 활용하여 product 데이터를 json으로 변경
+        r = requests.put(putUrlPrefix + id, data=json.dumps(product.__dict__,
+                        indent=4, sort_keys=True, default=json_field_handler), headers=headers)
+        # 에러 핸들링
+        if r.status_code >= 400:
+           print("There is an error writing to elasticsearch")
+           print(r.status_code)
+           print(r.json()) 
 
 # 아주 naive 한 출고지 extraction subroutine
 # 국내/해외 배송 관련
