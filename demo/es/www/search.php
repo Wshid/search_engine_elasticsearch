@@ -18,9 +18,11 @@ $search_result = json_decode($json_response_data);
         <title>검색결과 - <?php print($query) ?></title>
     </head>
     <body>
+        <!-- 결과로 나온 초수 계산 -->
         <div><?php print($search_result->took) ?>ms 안에 <?php print($search_result->hits->total->value) ?>개의 검색결과를 찾았습니다.</div>
         <br>
         <?php
+            // hits 내부를 파싱
             foreach ($search_result->hits->hits as $row) {
                 print("<div><img src='" . $image_prefix . $row->_source->image_file . "' height='100'></div>");
                 print("<div><a href='" .  $row->_source->url . "'>" . $row->_source->title . " (score:" . $row->_score . ")</a></div>");

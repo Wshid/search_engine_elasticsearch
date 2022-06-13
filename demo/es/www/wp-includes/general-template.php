@@ -321,6 +321,7 @@ function get_search_form( $args = array() ) {
 
 		if ( 'html5' === $format ) {
 			// 서치페이지를 수동제작된 페이지로 re-route 합니다.
+			// es로 조회할 수 있도록 `search.php`가 지정된 상태
 			// $form = '<form role="search" ' . $aria_label . 'method="get" class="search-form" action="' . esc_url( home_url( '/search.php' ) ) . '">
 			$form = '<form role="search" ' . $aria_label . 'method="get" class="search-form" action="' . esc_url( home_url( '/search.php' ) ) . '">
 				<label>
