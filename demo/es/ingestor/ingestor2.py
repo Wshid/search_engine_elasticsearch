@@ -8,6 +8,7 @@ import kg.kg_loader as kg_loader
 
 # SQL 에 연결하여 제품 페이지들을 추출하여 ProductPost array 로 돌려주는 함수입니다
 def getPostings():
+    # 위키피디아 xml 파일을 소스로 사용, 장미에 대한 페이지와 그 속성들 포함
     kg_source = 'kg/kowiki-20210701-pages-articles-multistream-extracted.xml'
     wiki_kg = kg_loader.loadWikimedia(kg_source)
     cnx = mysql.connector.connect(user='root',
