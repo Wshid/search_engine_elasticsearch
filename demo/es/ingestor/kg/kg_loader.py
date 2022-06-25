@@ -29,6 +29,9 @@ def loadWikimedia(source_file):
                         # 생물 분류 내 이름, 화석_범위, 그림, 그림_설명등의 속성에 따른 결과 값 [[ ... ]] 내용을 한개씩 파싱
                         # 이후 entry라는 key,value dict로 관리
                         entry[str(param.name).strip()] = value
+        # 단순히 map에 1차적으로 표현
+        # 이를 그래프로 표현하려면 neo4j나 redisGraph등을 사용하여 추출 가능
+        # 예제상에서는 간단하게 작업하기 위해 1차원만 사용
         kg[title] = entry
     return kg
 
