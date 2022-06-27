@@ -37,6 +37,7 @@ def getPostings():
             # wiki_kg 정보중에 n_gram이 있다면 추가 파악
            if n_gram in wiki_kg:
                print("found entry for " + n_gram)
+               # 키워드의 확장, meta_data 자체를 저장하여 검색 확장
                meta_data = {**meta_data, **wiki_kg[n_gram]}
                subspecies = maybeGetSubspecies(wiki_kg[n_gram])
                # 과 정보를 가져왔다면 그 정보를 keywords에 추가
