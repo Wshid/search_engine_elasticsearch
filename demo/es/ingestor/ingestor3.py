@@ -10,9 +10,10 @@ import flower_classifier.raw_color as raw_color
 
 # SQL 에 연결하여 제품 페이지들을 추출하여 ProductPost array 로 돌려주는 함수입니다
 def getPostings():
-    wp_attachments_prefix = '../www/wp-content/uploads/'
+    # 실습을 도와주기 위한 파일 관련 정보
+    wp_attachments_prefix = 'demo/es/www/wp-content/uploads/'
     wp_attachments_url_prefix = 'http://localhost:8000/wp-content/uploads/'
-    kg_source = 'kg/kowiki-20210701-pages-articles-multistream-extracted.xml'
+    kg_source = 'demo/es/ingestor/kg/kowiki-20210701-pages-articles-multistream-extracted.xml'
     wiki_kg = kg_loader.loadWikimedia(kg_source)
     cnx = mysql.connector.connect(user='root',
                                 password='my_secret_pw',
@@ -31,11 +32,13 @@ def getPostings():
         print("Post {} found. URL: {}".format(id, url))
         meta_data = {}
         keywords = []
+        # 이미지 관련 정보 저장
         image_url = wp_attachments_url_prefix + image
         image_file = wp_attachments_prefix + image
         # 1. Dominant raw color 를 추출합니다.
-        # dominant_color = raw_color.get_dominant_rgb(image_file)
-        # keywords.append(dominant_color)
+        dominant_color = raw_color.get_dominant_rgb(image_file)
+        # 추출한 색상 정보를 keywords에 추가
+        keywords.append(dominant_color)
 
         # 3. flower classification 을 통해 추가 데이터를 추출해 냅니다.
         # image_class, confidence = classifier.predict_class(title, image_url, class_names, model)
