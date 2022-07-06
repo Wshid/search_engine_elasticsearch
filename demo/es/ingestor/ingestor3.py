@@ -5,6 +5,7 @@ import json
 import mysql.connector
 import requests
 import kg.kg_loader as kg_loader
+# tensorflow classifier 모델
 import flower_classifier.tf_classifier as classifier
 import flower_classifier.raw_color as raw_color
 
@@ -22,7 +23,7 @@ def getPostings():
                                 database='flowermall')
     cursor = cnx.cursor()
     # 2. Flower model 을 train 합니다.
-    # class_names, model = classifier.build_flower_model()
+    class_names, model = classifier.build_flower_model()
 
     query = ('SELECT posts.ID AS id, posts.post_content AS content, posts.post_title AS title, posts.guid AS post_url, posts.post_date AS post_date, posts.post_modified AS modified_date, metadata.meta_value AS meta_value, image_data.meta_value AS image FROM wp_posts AS posts JOIN wp_postmeta AS image_metadata ON image_metadata.post_id = posts.ID JOIN wp_postmeta AS image_data ON image_data.post_id = image_metadata.meta_value JOIN wp_postmeta AS metadata ON metadata.post_id = posts.ID WHERE posts.post_status = "publish" AND posts.post_type = "product" AND metadata.meta_key = "_product_attributes" AND image_metadata.meta_key = "_thumbnail_id" AND image_data.meta_key = "_wp_attached_file"')
     cursor.execute(query)
@@ -41,10 +42,11 @@ def getPostings():
         keywords.append(dominant_color)
 
         # 3. flower classification 을 통해 추가 데이터를 추출해 냅니다.
-        # image_class, confidence = classifier.predict_class(title, image_url, class_names, model)
-        #if (confidence > 0.8):
-        #    print(image_url + ' is most likely ' + image_class)
-        #    keywords.append(image_class)
+        image_class, confidence = classifier.predict_class(title, image_url, class_names, model)
+        # confidence가 80% 이상일때 유사 image_class에 해당, 키워드에 추가
+        if (confidence > 0.8):
+           print(image_url + ' is most likely ' + image_class)
+           keywords.append(image_class)
         for n_gram in title.split():
             if n_gram in wiki_kg:
                 print("found entry for " + n_gram)
