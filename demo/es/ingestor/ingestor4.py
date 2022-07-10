@@ -51,12 +51,14 @@ def getPostings():
                 if subspecies != None:
                     keywords.append(subspecies)
         shipping_location = assumeShippingLocation(meta_value)
+        # rank_reference 지정
         ships_local = 0.1
         ships_intl = 0.1
         if (shipping_location == '국내'):
             ships_local = 1.0
         else:
             ships_intl = 1.0
+        # 국내배송인지 해외배송인지 추가
         local_confidence = { 'KR': ships_local, 'intl': ships_intl }
         product = ProductPost(id, content, title, url,
                               post_date, modified_date, shipping_location, image, meta_data, " ".join(keywords), raw_colors, local_confidence)
@@ -88,6 +90,7 @@ def postToElasticSearch(products):
             print(r.json())
 
 # 아주 naive 한 출고지 extraction subroutine
+# 국내배송/해외배송 여부 리턴
 def assumeShippingLocation(raw_php_array):
     if u'국내' in raw_php_array:
         return '국내'
@@ -121,6 +124,7 @@ class ProductPost(object):
     self.meta_data = meta_data
     self.keywords = keywords
     self.color_ranks = color_ranks
+    # 배송 관련 정보 추가
     self.local_confidence = local_confidence
 
 p = getPostings()
