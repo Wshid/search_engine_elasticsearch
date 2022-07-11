@@ -3,10 +3,17 @@
 # constants
 $query = $_GET["s"];
 $image_prefix = "http://localhost:8000/wp-content/uploads/";
+# search를 이용해 query_string을 사용하여 조회 가능
+# must, should, ...
+# rank_features를 변경할때도 사용함(boost를 통해 score boost 가능, 기본 socre * boost로 정의됨)
 $es_search_url = "http://elasticsearch:9200/products/_search";
 
+
 function getClientCountryCode() {
+    # php 7.0부터 지원, ip를 가져올 수 있음
     $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+    # reverse IP lookup, geoplugin 서비스 사용, ip를 입력하면 해당 위치를 알려줌
+    # json.gp를 입력하면 관련 내용을 json 형태로 받아볼 수 있음 
     $rev_geo_lookup_url = "http://www.geoplugin.net/json.gp?ip=";
     $cURL = curl_init();
     $setopt_array = array(CURLOPT_URL => $rev_geo_lookup_url . urlencode($ip), CURLOPT_RETURNTRANSFER => true, CURLOPT_HTTPHEADER => array()); 
@@ -14,6 +21,7 @@ function getClientCountryCode() {
     $json_resp = curl_exec($cURL);
     curl_close($cURL);
     $rev_geo_resp = json_decode($json_resp);
+    # json 데이터가 올바르다면, 관련 값 리턴, 아닐경우 ""
     if (isset($rev_geo_resp)) {
         return $rev_geo_resp->geoplugin_countryCode;
     }
@@ -35,8 +43,10 @@ function getColorFromQuery($query) {
 $cURL = curl_init();
 $country_code = getClientCountryCode();
 $color_from_query = getColorFromQuery($query);
+# json type 추가에 따라 header내에 content-type 추가
 $setopt_array = array(CURLOPT_URL => $es_search_url , CURLOPT_RETURNTRANSFER => true, CURLOPT_HTTPHEADER => array('Content-Type: application/json')); 
 $es_json_body = (object) [];
+# json attribute를 정의하는 부분. es search_query body를 생성하는 작업
 $es_json_body->query->bool->must = array(array('query_string' => array('query' => str_replace($color_from_query, "",$query))));
 if ($color_from_query != '') {
     array_push($es_json_body->query->bool->must,
