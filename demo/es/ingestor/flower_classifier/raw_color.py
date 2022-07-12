@@ -28,6 +28,8 @@ def get_dominant_raw_color(r,g,b):
         return 'green'
     return 'blue'
 
+# dominant한 하나의 색상이 아닌, 전체적으로 rgb의 정도를 계산
+# rgb_counters의 해당 내용 저장
 def get_rgb_ratio(image_file):
     im = Image.open(image_file)
     pix = im.load()

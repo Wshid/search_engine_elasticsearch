@@ -1,0 +1,7 @@
+## 05.05. Demotion 및 Promotion 실습 1
+- `raw` 색상을 가지고 `demotion/promotion`을 하는 ranking exercise
+  - `create_index3.py`
+  - `ingestor4.py`
+  - `search2.php`
+- 기존 index를 지우고 재생성
+  - ![image](https://user-images.githubusercontent.com/10006290/178481135-8b6cb623-c515-42f4-ab5c-07be58f6ed38.png)

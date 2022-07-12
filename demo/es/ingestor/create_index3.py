@@ -51,6 +51,7 @@ payload = json.dumps({
             "meta_data": {
                 "type": "object"
             },
+            # 새로 추가되는 컬럼
             "color_ranks": {
                 "type": "rank_features"
             },

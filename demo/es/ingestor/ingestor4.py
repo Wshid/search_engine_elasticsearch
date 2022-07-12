@@ -35,6 +35,7 @@ def getPostings():
         image_file = wp_attachments_prefix + image
         dominant_color = raw_color.get_dominant_rgb(image_file)
         keywords.append(dominant_color)
+        # 색상 정보를 저장
         r_rate, g_rate, b_rate = raw_color.get_rgb_ratio(image_file)
         raw_colors = {'red': r_rate, 'green': g_rate, 'blue': b_rate}
 
@@ -60,6 +61,7 @@ def getPostings():
             ships_intl = 1.0
         # 국내배송인지 해외배송인지 추가
         local_confidence = { 'KR': ships_local, 'intl': ships_intl }
+        # 색상 정보(raw_colors) 추가
         product = ProductPost(id, content, title, url,
                               post_date, modified_date, shipping_location, image, meta_data, " ".join(keywords), raw_colors, local_confidence)
         posting_list.append(product)
@@ -123,6 +125,7 @@ class ProductPost(object):
     self.image_file = image_file
     self.meta_data = meta_data
     self.keywords = keywords
+    # 색상 정보 추가
     self.color_ranks = color_ranks
     # 배송 관련 정보 추가
     self.local_confidence = local_confidence
