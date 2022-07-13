@@ -28,6 +28,7 @@ function getClientCountryCode() {
     return "";
 }
 
+# query가 string이고, string 내에 색깔(e.g. red)가 들어있다면 해당 색상 리턴
 function getColorFromQuery($query) {
     if (strpos($query, 'red') !== false) {
         return 'red';
@@ -47,8 +48,12 @@ $color_from_query = getColorFromQuery($query);
 $setopt_array = array(CURLOPT_URL => $es_search_url , CURLOPT_RETURNTRANSFER => true, CURLOPT_HTTPHEADER => array('Content-Type: application/json')); 
 $es_json_body = (object) [];
 # json attribute를 정의하는 부분. es search_query body를 생성하는 작업
+# 특정 색상 정보 (e.g. red)가 쿼리 자체에 존재한다면, 해당 내용을 ""로 치환(제거)
+## e.g. `red 장미` 검색 -> `장미` 검색 결과로
 $es_json_body->query->bool->must = array(array('query_string' => array('query' => str_replace($color_from_query, "",$query))));
+# color_from_query가 있다면, 관련 내용을 `color_ranks`에 추가함
 if ($color_from_query != '') {
+    # es 내부의 값들은 json 형태로 `.`을 통해 접근 가능(e.g. color_ranks.red)
     array_push($es_json_body->query->bool->must,
         array('rank_feature' => array('field' => 'color_ranks.' . $color_from_query, 'saturation' => array('pivot' => 35))));
 }

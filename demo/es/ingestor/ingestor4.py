@@ -10,9 +10,9 @@ import flower_classifier.raw_color as raw_color
 
 # SQL 에 연결하여 제품 페이지들을 추출하여 ProductPost array 로 돌려주는 함수입니다
 def getPostings():
-    wp_attachments_prefix = '../www/wp-content/uploads/'
+    wp_attachments_prefix = 'demo/es/www/wp-content/uploads/'
     wp_attachments_url_prefix = 'http://localhost:8000/wp-content/uploads/'
-    kg_source = 'kg/kowiki-20210701-pages-articles-multistream-extracted.xml'
+    kg_source = 'demo/es/ingestor/kg/kowiki-20210701-pages-articles-multistream-extracted.xml'
     wiki_kg = kg_loader.loadWikimedia(kg_source)
     cnx = mysql.connector.connect(user='root',
                                 password='my_secret_pw',
@@ -21,7 +21,7 @@ def getPostings():
                                 database='flowermall')
     cursor = cnx.cursor()
     # 2. Flower model 을 train 합니다.
-    # class_names, model = classifier.build_flower_model()
+    class_names, model = classifier.build_flower_model()
 
     query = ('SELECT posts.ID AS id, posts.post_content AS content, posts.post_title AS title, posts.guid AS post_url, posts.post_date AS post_date, posts.post_modified AS modified_date, metadata.meta_value AS meta_value, image_data.meta_value AS image FROM wp_posts AS posts JOIN wp_postmeta AS image_metadata ON image_metadata.post_id = posts.ID JOIN wp_postmeta AS image_data ON image_data.post_id = image_metadata.meta_value JOIN wp_postmeta AS metadata ON metadata.post_id = posts.ID WHERE posts.post_status = "publish" AND posts.post_type = "product" AND metadata.meta_key = "_product_attributes" AND image_metadata.meta_key = "_thumbnail_id" AND image_data.meta_key = "_wp_attached_file"')
     cursor.execute(query)
